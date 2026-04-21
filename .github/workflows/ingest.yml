@@ -30,3 +30,4 @@ jobs:
       - run: pip install requests snowflake-connector-python
 
       - run: python scripts/ingest.py
+      - run: python scripts/ingest_meteo.py

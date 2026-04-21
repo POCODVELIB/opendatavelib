@@ -1,3 +1,11 @@
+"""
+Description :  POC ingestion de données d'un dataset OpenData VELIB dans Snowflake
+-------------------------------------------------------------------------------------
+Author      : Said HOUSSEINE   
+Created     : 2026-04-21
+-------------------------------------------------------------------------------------
+"""
+
 import os, json, requests, snowflake.connector
 from datetime import datetime, timezone
 

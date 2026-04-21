@@ -29,7 +29,6 @@ def fetch(url):
     r = requests.get(url, timeout=30)
     r.raise_for_status()
     data = r.json()
-    # Les données GBFS sont dans data.data.<clé>[]
     for key in data.get("data", {}).values():
         if isinstance(key, list):
             return key
@@ -47,17 +46,21 @@ def load(cur, dataset, rows):
     """)
     cur.execute("""
         CREATE TABLE IF NOT EXISTS RAW.AUDIT (
-            run_id VARCHAR, dataset VARCHAR,
-            started_at TIMESTAMP_TZ, finished_at TIMESTAMP_TZ,
-            rows_inserted INT, status VARCHAR, error VARCHAR
+            run_id        VARCHAR,
+            dataset       VARCHAR,
+            started_at    TIMESTAMP_TZ,
+            finished_at   TIMESTAMP_TZ,
+            rows_inserted INT,
+            status        VARCHAR,
+            error         VARCHAR
         )
     """)
-    batch = [(RUN_ID, dataset, json.dumps(r)) for r in rows]
-    cur.executemany(
-        f"INSERT INTO RAW.{table}(_run_id,_dataset,_raw) SELECT %s,%s,PARSE_JSON(%s)",
-        batch
-    )
-    return len(batch)
+    for row in rows:
+        cur.execute(
+            f"INSERT INTO RAW.{table}(_run_id, _dataset, _raw) SELECT %s, %s, %s::VARIANT",
+            (RUN_ID, dataset, json.dumps(row))
+        )
+    return len(rows)
 
 def main():
     started = datetime.now(timezone.utc)

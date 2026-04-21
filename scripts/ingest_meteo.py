@@ -25,9 +25,8 @@ SF = dict(
     warehouse=os.environ["SF_WAREHOUSE"],
     role="INGESTION_ROLE",
 )
-RUN_ID = os.environ.get(
-    "GITHUB_RUN_ID", datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-)
+RUN_ID = os.environ.get("GITHUB_RUN_ID")
+
 
 
 def main():
@@ -45,6 +44,6 @@ def main():
         (RUN_ID, json.dumps(data)),
     )
     conn.commit()
-    print("✅ Météo insérée")
+    print("✅ Météo de Paris insérée")
     cur.close()
     conn.close()

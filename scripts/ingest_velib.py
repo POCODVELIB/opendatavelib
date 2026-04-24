@@ -6,7 +6,7 @@ Created     : 2026-04-21
 -------------------------------------------------------------------------------------
 """
 
-import os, json, requests, snowflake.connector
+import os, json, requests
 from sf_connect import get_connection
 
 DATASETS = {
@@ -25,8 +25,8 @@ for dataset, url in DATASETS.items():
     print(f"{dataset} → {len(rows)} records")
     for row in rows:
         cur.execute(
-            f"INSERT INTO RAW.{dataset.upper()}(_run_id,_dataset,_raw) SELECT %s,%s,%s::VARIANT",
-            (RUN_ID, dataset, json.dumps(row))
+            f"INSERT INTO RAW.{dataset.upper()}(_run_id, _raw) SELECT %s, %s::VARIANT",
+            (RUN_ID, json.dumps(row))
         )
     conn.commit()
 
